@@ -1,0 +1,33 @@
+{
+	"manifest_version": 2,
+
+	"name": "JS & CSS Extender",
+	"version": "0.1",
+	"description": "A lightweight extension to add custom JS and CSS into web pages.",
+	"author": "Maxime Leboeuf",
+
+	"browser_action": {
+		"default_icon": "images/icon.png",
+		"default_title": "JS & CSS Extender",
+		"default_popup": "pages/popup/popup.html"
+	},
+
+	"options_page": "pages/options/options.html",
+
+	"permissions" : [
+		"tabs",
+		"storage",
+		"<all_urls>"
+	],
+
+	"content_scripts": [{
+	    "matches": ["<all_urls>"],
+
+	    "js": [
+	      "core/inject-utils.js"
+	    ],
+
+	    "run_at": "document_start",
+	    "all_frames": true
+  }]
+}
