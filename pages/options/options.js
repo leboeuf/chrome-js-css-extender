@@ -10,7 +10,13 @@ var Options = {
 
 	toggle: function(e) {
 		var $this = $(e.target);
-		console.log($this);
+		var optionKey = $this.data("optionkey");
+
+		if (optionKey === undefined)
+			return;
+
+		chrome.storage.sync.set({ optionKey: $this.val() }, null);
+		//todo: chrome.storage.sync.set({ 'css' / 'js' / ... : $options.css/js/... }, null);
 	}
 }
 
