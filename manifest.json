@@ -14,6 +14,11 @@
 
 	"options_page": "pages/options/options.html",
 
+	"background": {
+		"scripts": ["core/eventPage.js"],
+		"persistent": false
+	},
+
 	"permissions" : [
 		"tabs",
 		"storage",
