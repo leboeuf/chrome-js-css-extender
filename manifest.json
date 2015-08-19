@@ -21,6 +21,7 @@
 
 	"permissions" : [
 		"tabs",
+		"webNavigation",
 		"storage",
 		"<all_urls>"
 	],
