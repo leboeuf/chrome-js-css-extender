@@ -1,7 +1,7 @@
 $(function(){
-	$("#toggle").click(function(){ alert('clicked'); });
-	$("#css").click(function(){ alert('clicked'); });
-	$("#js").click(function(){ alert('clicked'); });
+	$("#toggle").click(function(){ toggleEnabledOnThisSite($(this).prop('checked')); });
+	$("#css").click(function(){ editCustomCss(); });
+	$("#js").click(function(){ editCustomJs() });
 });
 
 function getStoredFile() {
@@ -10,6 +10,18 @@ function getStoredFile() {
 
 function callbackFromGetStoredFile() {
 
+}
+
+function toggleEnabledOnThisSite(isEnabled) {
+
+}
+
+function editCustomCss() {
+
+}
+
+function editCustomJs() {
+	
 }
 
 //http://stackoverflow.com/questions/9915311/chrome-extension-code-vs-content-scripts-vs-injected-scripts
