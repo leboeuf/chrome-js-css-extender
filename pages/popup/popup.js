@@ -18,10 +18,11 @@ function toggleEnabledOnThisSite(isEnabled) {
 
 function editCustomCss() {
 	console.log(getCurrentTabUrl());
+	chrome.runtime.sendMessage({name:'edit_custom_css'});
 }
 
 function editCustomJs() {
-	
+	chrome.runtime.sendMessage({name:'edit_custom_js'});
 }
 
 function getCurrentTabUrl() {

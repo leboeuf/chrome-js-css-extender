@@ -1,6 +1,9 @@
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	switch (message.name) {
-		case 'activateBrowserAction':
+		case 'edit_custom_css':
+			alert('test');
+			break;
+		case 'edit_custom_js':
 			alert('test');
 			break;
 	}
