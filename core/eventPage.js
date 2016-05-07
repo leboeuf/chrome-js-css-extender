@@ -5,9 +5,21 @@ chrome.webNavigation.onCompleted.addListener(function(o) {
 	// Only act on the main page
 	if (o.frameId > 0) return;
 
+	// TODO: check if there is custom JS or CSS to execute for this URL
+	var match = 'https://www.google.com/calendar/render';
+	var customJs = getCustomJs(o.url);
+
+	// Return if no custom JS or CSS for this URL
+    //if (match !== o.url.substring(0, match.length)) return;
+
 	chrome.tabs.executeScript(o.tabId, {
-		code: 'document.body.style.backgroundColor="red"'
+		code: customJs
 	});
 }, {
 	url: []
 });
+
+function getCustomJs(url) {
+	// TODO: maybe add the following placeholder when creating a custom JS: (function() { ... })();
+	return "document.body.style.backgroundColor='red'; alert('test');";
+}
