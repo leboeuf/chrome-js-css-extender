@@ -15,7 +15,7 @@ var extender = {
 function loadAllStorage(callback)
 {
 	// Load options, styles and scripts from local storage
-	chrome.storage.local.get(['options', 'styles'], function(items) {
+	chrome.storage.local.get(['options', 'styles', 'scripts'], function(items) {
 		if (items['options']) {
 			cache.options = items['options'];
 		}

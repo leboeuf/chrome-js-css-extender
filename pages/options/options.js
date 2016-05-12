@@ -1,5 +1,12 @@
 var Options = {
-	init: function() {
+	optionsCache: {},
+
+	init: function(options) {
+		optionsCache = options;
+
+		// Update UI with options from storage
+		//$('input[data-optionkey=IsGlobalCssEnabled]')
+
 		this.attachListeners();
 	},
 
@@ -15,19 +22,19 @@ var Options = {
 		if (optionKey === undefined)
 			return;
 
-		chrome.storage.sync.set({ optionKey: $this.val() }, null);
+		optionsCache[optionKey] = $this.val();
+
+		chrome.storage.sync.set({ 'options': optionsCache }, null);
 		//todo: chrome.storage.sync.set({ 'css' / 'js' / ... : $options.css/js/... }, null);
 	}
 }
 
 $(function(){
-	// DEBUG: get all storage items
+	//chrome.storage.sync.clear(); // Debug: use this to clear options
+
+	// Get all storage items and initialize everything
 	chrome.storage.sync.get(null, function(items){
 		console.log(items);
-		for (i = 0; i < items.length; i++) { 
-		    $("#debug").text(items[i]);
-		}
+		Options.init(items);
 	});
-
-	Options.init();
 });
