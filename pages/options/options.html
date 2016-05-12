@@ -3,47 +3,60 @@
 	<head>
 		<title>JS & CSS Extender</title>
 		<style>
-
+		#main-container { width: 100%; white-space:nowrap; }
+		#main-container > div { display:inline-block; width: 50%; vertical-align: top; }
+		#edit textarea { box-sizing: border-box; width: 100%; min-height: 300px;}
 		</style>
 		<script src="../../jquery-2.1.3.min.js"></script>
 		<script src="options.js"></script>
 	</head>
 	<body>
-		<div id="options">
-			<h1>JS & CSS Extender Options</h1>
-			<div>
-				<h2>Global JS & CSS</h2>
-				<p>This JS and CSS will be applied to all web pages you visit.</p>
+		<div id="main-container">
+			<div id="options">
+				<h1>JS & CSS Extender Options</h1>
 				<div>
-					<label>
-						<input type="checkbox" data-optionkey="IsGlobalCssEnabled" />
-						<span>Enable global CSS</span>
-						<button>Edit</button>
-					</label>
-				</div>
-				<div>
-					<label>
-						<input type="checkbox" data-optionkey="IsGlobalJsEnabled" />
-						<span>Enable global JS</span>
-						<button>Edit</button>
-					</label>
-				</div>
-			</div>
-			<div>
-				<h2>Custom JS & CSS</h2>
-				<p>Edit custom JS and CSS that will be applied to specific websites.</p>
-				<div id="custom"></div>
-				<div>
+					<h2>Global JS & CSS</h2>
+					<p>This JS and CSS will be applied to all web pages you visit.</p>
 					<div>
-						<button>Backup</button>
-						<button>Import</button>
+						<label>
+							<input type="checkbox" data-optionkey="IsGlobalJsEnabled" />
+							<span>Enable global JS</span>
+							<button data-action="edit-global-js">Edit</button>
+						</label>
 					</div>
 					<div>
-						<button>Add</button>
+						<label>
+							<input type="checkbox" data-optionkey="IsGlobalCssEnabled" />
+							<span>Enable global CSS</span>
+							<button data-action="edit-global-css">Edit</button>
+						</label>
+					</div>
+				</div>
+				<div>
+					<h2>Custom JS & CSS</h2>
+					<p>Edit custom JS and CSS that will be applied to specific websites.</p>
+					<div>
+						<div>
+							<button data-action="backup">Backup</button>
+							<button data-action="import">Import</button>
+						</div>
+						<div id="customization-list"></div>
+						<div>
+							<button data-action="add">Add</button>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div id="debug"></div>
+
+			<div id="edit" style="display: none;">
+				<h2>Edit</h2>
+				<input type="hidden" id="edit-target" /><!-- #edit-target contains what is being edited -->
+				<div>
+					<button data-action="save">Save</button>
+					<button data-action="cancel">Cancel</button>
+				</div>
+				<textarea></textarea>
+			</div>
 		</div>
 	</body>
 </html>
