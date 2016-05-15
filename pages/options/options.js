@@ -1,13 +1,9 @@
 var Options = {
 	optionsCache: {},
-	globalJs: '',
-	globalCss: '',
 
 	init: function(options) {
 		console.log(options);
-		optionsCache = options['options'] === undefined ? {} : options['options'];
-		globalJs = options['globalJs'] === undefined ? {} : options['globalJs'];
-		globalJs = options['globalCss'] === undefined ? {} : options['globalCss'];
+		optionsCache = options['options'] || {};
 
 		// Update UI with options from storage
 		$('input[type=checkbox]').each(function(i, e) {
@@ -20,7 +16,7 @@ var Options = {
 	},
 
 	attachListeners: function() {
-		$('#options')
+		$('#main-container')
 			.on('click', 'input[type=checkbox]', this.toggle)
 			.on('click', 'button', this.buttonClick);
 	},
@@ -35,7 +31,20 @@ var Options = {
 		optionsCache[optionKey] = $this.is(':checked');
 
 		chrome.storage.sync.set({ 'options': optionsCache }, null);
+	},
+
+	// Persist what is in the edition textarea (happens then the user clicks 'Save')
+	persistEditbox: function() {
+		var $editDiv = $('#edit');
+		var optionKey = $editDiv.find('#edit-target').val();
+		var value = $editDiv.find('textarea').val();
+
+		optionsCache[optionKey] = value;
+
+		chrome.storage.sync.set({ 'options': optionsCache }, null);
 		//todo: chrome.storage.sync.set({ 'css' / 'js' / ... : $options.css/js/... }, null);
+
+		Options.closeEdit();
 	},
 
 	buttonClick: function(e) {
@@ -50,10 +59,16 @@ var Options = {
 			case 'import':
 			case 'backup':
 			case 'edit-global-js':
-				Options.edit('globalJs', 'Edit global JS', this.globalJs);
+				Options.edit('globalJs', 'Edit global JS', optionsCache['globalJs'] || '');
 				break;
 			case 'edit-global-css':
-				Options.edit('globalCss', 'Edit global CSS', this.globalCss);
+				Options.edit('globalCss', 'Edit global CSS', optionsCache['globalCss'] || '');
+				break;
+			case 'save':
+				Options.persistEditbox();
+				break;
+			case 'cancel':
+				Options.closeEdit();
 				break;
 			default:
 				break;
@@ -63,13 +78,22 @@ var Options = {
 	edit: function(target, titleText, content) {
 		var $editDiv = $('#edit');
 		$editDiv.find('h2').text(titleText);
+		$editDiv.find('#edit-target').val(target);
 		$editDiv.find('textarea').val(content);
 		$editDiv.show();
+	},
+
+	closeEdit: function() {
+		var $editDiv = $('#edit');
+		$editDiv.find('h2').text('');
+		$editDiv.find('#edit-target').val('');
+		$editDiv.find('textarea').val('');
+		$editDiv.hide();
 	}
 }
 
 $(function(){
-	//chrome.storage.sync.clear(); // Debug: use this to clear options
+	// chrome.storage.sync.clear(); // Debug: use this to clear options
 
 	// Get all storage items and initialize everything
 	chrome.storage.sync.get(null, function(items){

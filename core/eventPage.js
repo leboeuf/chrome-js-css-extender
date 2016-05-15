@@ -1,3 +1,11 @@
+var optionsCache;
+
+(function() {
+	chrome.storage.sync.get(null, function(items){
+		optionsCache = items['options'] || {};
+	});
+})();
+
 // This is triggered when a document has finished loading
 // see http://stackoverflow.com/questions/27239280 for pushstate (e.g. youtube pages that load via ajax)
 chrome.webNavigation.onCompleted.addListener(function(o) {
@@ -21,5 +29,5 @@ chrome.webNavigation.onCompleted.addListener(function(o) {
 
 function getCustomJs(url) {
 	// TODO: maybe add the following placeholder when creating a custom JS: (function() { ... })();
-	return "document.body.style.backgroundColor='red'; alert('test');";
+	return optionsCache['globalJs'];
 }
