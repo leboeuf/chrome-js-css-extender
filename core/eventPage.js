@@ -9,7 +9,6 @@ var optionsCache;
 // This is triggered when a document has finished loading
 // see http://stackoverflow.com/questions/27239280 for pushstate (e.g. youtube pages that load via ajax)
 chrome.webNavigation.onCompleted.addListener(function(o) {
-
 	// Only act on the main page
 	if (o.frameId > 0) return;
 
@@ -29,5 +28,5 @@ chrome.webNavigation.onCompleted.addListener(function(o) {
 
 function getCustomJs(url) {
 	// TODO: maybe add the following placeholder when creating a custom JS: (function() { ... })();
-	return optionsCache['globalJs'];
+	return '/*put-custom-js-here*/' + optionsCache['globalJs'];
 }
