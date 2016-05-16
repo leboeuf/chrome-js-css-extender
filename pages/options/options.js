@@ -39,7 +39,10 @@ var Options = {
 		var optionKey = $editDiv.find('#edit-target').val();
 		var value = $editDiv.find('textarea').val();
 
-		optionsCache[optionKey] = value;
+		if (optionKey.indexOf('js-') === 0 || optionKey.indexOf('css-'))
+			Options.addOrEditCustomJsOrCss(optionKey, value);
+		else
+			optionsCache[optionKey] = value;
 
 		chrome.storage.sync.set({ 'options': optionsCache }, null);
 		//todo: chrome.storage.sync.set({ 'css' / 'js' / ... : $options.css/js/... }, null);
@@ -56,6 +59,14 @@ var Options = {
 
 		switch (action) {
 			case 'add':
+			case 'edit-js':
+				var targetUrl = 'todo';
+				Options.edit('js-' + targetUrl, 'Edit JS', '');
+				break;
+			case 'edit-css':
+				var targetUrl = 'todo';
+				Options.edit('css-' + targetUrl, 'Edit CSS', '');
+				break;
 			case 'import':
 			case 'backup':
 			case 'edit-global-js':
@@ -89,6 +100,10 @@ var Options = {
 		$editDiv.find('#edit-target').val('');
 		$editDiv.find('textarea').val('');
 		$editDiv.hide();
+	},
+
+	addOrEditCustomJsOrCss: function(target, content) {
+
 	}
 }
 
