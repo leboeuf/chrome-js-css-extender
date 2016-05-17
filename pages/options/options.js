@@ -60,12 +60,17 @@ var Options = {
 		switch (action) {
 			case 'add':
 			case 'edit-js':
-				var targetUrl = 'todo';
+				var targetUrl = $this.parent().parent().find('.customized-url').text();
 				Options.edit('js-' + targetUrl, 'Edit JS', '');
 				break;
 			case 'edit-css':
-				var targetUrl = 'todo';
+				var targetUrl = $this.parent().parent().find('.customized-url').text();
 				Options.edit('css-' + targetUrl, 'Edit CSS', '');
+				break;
+			case 'delete':
+				var targetUrl = $this.parent().parent().find('.customized-url').text();
+				// todo: delete from options and DOM
+				Options.closeEdit();
 				break;
 			case 'import':
 			case 'backup':
@@ -103,7 +108,8 @@ var Options = {
 	},
 
 	addOrEditCustomJsOrCss: function(target, content) {
-
+		console.log('target=' + target);
+		console.log('content=' + content);
 	}
 }
 
