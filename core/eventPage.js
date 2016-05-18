@@ -28,5 +28,15 @@ chrome.webNavigation.onCompleted.addListener(function(o) {
 
 function getCustomJs(url) {
 	// TODO: maybe add the following placeholder when creating a custom JS: (function() { ... })();
-	return '/*put-custom-js-here*/' + optionsCache['globalJs'];
+	var isGlobalJsEnabled = optionsCache['IsGlobalJsEnabled'] || false;
+	var customJs = optionsCache[url] !== undefined
+		? optionsCache[url]['js'] || ''
+		: '';
+
+	if (isGlobalJsEnabled)
+	{
+		customJs += optionsCache['globalJs'];
+	}
+
+	return customJs;
 }

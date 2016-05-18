@@ -5,7 +5,8 @@
 		<style>
 		#main-container { width: 100%; white-space:nowrap; }
 		#main-container > div { display:inline-block; width: 50%; vertical-align: top; }
-		#edit textarea { box-sizing: border-box; width: 100%; min-height: 300px;}
+		#edit textarea { box-sizing: border-box; width: 100%; min-height: 300px; }
+		#edit #edit-url { width: 80%; }
 		</style>
 		<script src="../../jquery-2.1.3.min.js"></script>
 		<script src="options.js"></script>
@@ -46,11 +47,13 @@
 									<th>URL</th>
 									<th>JS</th>
 									<th>CSS</th>
+									<th></th>
 								</tr>
 								<tr>
 									<td class="customized-url">http://example.com/example/test</td>
 									<td><button data-action="edit-js">Edit JS</button></td>
 									<td><button data-action="edit-css">Edit CSS</button></td>
+									<td><button data-action="delete">delete</button></td>
 								</tr>
 							</table>
 						</div>
@@ -63,6 +66,10 @@
 
 			<div id="edit" style="display: none;">
 				<h2>Edit</h2>
+				<div>
+					<label>URL:</label>
+					<input type="text" id="edit-url" />
+				</div>
 				<input type="hidden" id="edit-target" /><!-- #edit-target contains what is being edited -->
 				<div>
 					<button data-action="save">Save</button>

@@ -38,9 +38,10 @@ var Options = {
 		var $editDiv = $('#edit');
 		var optionKey = $editDiv.find('#edit-target').val();
 		var value = $editDiv.find('textarea').val();
+		var targetUrl = $editDiv.find('#edit-url').val();
 
 		if (optionKey.indexOf('js-') === 0 || optionKey.indexOf('css-'))
-			Options.addOrEditCustomJsOrCss(optionKey, value);
+			Options.addOrEditCustomJsOrCss(optionKey, value, targetUrl);
 		else
 			optionsCache[optionKey] = value;
 
@@ -61,11 +62,11 @@ var Options = {
 			case 'add':
 			case 'edit-js':
 				var targetUrl = $this.parent().parent().find('.customized-url').text();
-				Options.edit('js-' + targetUrl, 'Edit JS', '');
+				Options.edit('js-' + targetUrl, 'Edit JS', '', targetUrl);
 				break;
 			case 'edit-css':
 				var targetUrl = $this.parent().parent().find('.customized-url').text();
-				Options.edit('css-' + targetUrl, 'Edit CSS', '');
+				Options.edit('css-' + targetUrl, 'Edit CSS', '', targetUrl);
 				break;
 			case 'delete':
 				var targetUrl = $this.parent().parent().find('.customized-url').text();
@@ -91,11 +92,17 @@ var Options = {
 		}
 	},
 
-	edit: function(target, titleText, content) {
+	edit: function(target, titleText, content, url = '') {
 		var $editDiv = $('#edit');
 		$editDiv.find('h2').text(titleText);
 		$editDiv.find('#edit-target').val(target);
 		$editDiv.find('textarea').val(content);
+
+		if (url != '')
+		{
+			$editDiv.find('#edit-url').val(url);
+		}
+
 		$editDiv.show();
 	},
 
@@ -103,13 +110,36 @@ var Options = {
 		var $editDiv = $('#edit');
 		$editDiv.find('h2').text('');
 		$editDiv.find('#edit-target').val('');
+		$editDiv.find('#edit-url').val('');
 		$editDiv.find('textarea').val('');
 		$editDiv.hide();
 	},
 
-	addOrEditCustomJsOrCss: function(target, content) {
-		console.log('target=' + target);
-		console.log('content=' + content);
+	addOrEditCustomJsOrCss: function(target, content, newUrl) {
+		var dashPos = target.indexOf('-');
+		var oldUrl = target.substring(dashPos + 1);
+		var jsOrCss = target.substring(0, dashPos);
+
+		if (optionsCache[newUrl] === undefined)
+		{
+			optionsCache[newUrl] = {};
+		}
+
+		if (newUrl != oldUrl && optionsCache[oldUrl] !== undefined)
+		{
+			// Move other (JS or CSS) content if present
+			var oldJs = optionsCache[oldUrl]['js'];
+			var oldCss = optionsCache[oldUrl]['css'];
+			optionsCache[newUrl][js] = oldJs;
+			optionsCache[newUrl][css] = oldCss;
+
+			delete optionsCache[oldUrl];
+			
+			// TODO: Adjust DOM to show new URL in place of the old one
+		}
+
+		optionsCache[newUrl][jsOrCss] = content;
+		chrome.storage.sync.set({ 'options': optionsCache }, null);
 	}
 }
 
