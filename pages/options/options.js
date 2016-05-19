@@ -29,7 +29,6 @@ var Options = {
 			return;
 
 		optionsCache[optionKey] = $this.is(':checked');
-
 		chrome.storage.sync.set({ 'options': optionsCache }, null);
 	},
 
@@ -46,8 +45,6 @@ var Options = {
 			optionsCache[optionKey] = value;
 
 		chrome.storage.sync.set({ 'options': optionsCache }, null);
-		//todo: chrome.storage.sync.set({ 'css' / 'js' / ... : $options.css/js/... }, null);
-
 		Options.closeEdit();
 	},
 
@@ -120,25 +117,30 @@ var Options = {
 		var oldUrl = target.substring(dashPos + 1);
 		var jsOrCss = target.substring(0, dashPos);
 
-		if (optionsCache[newUrl] === undefined)
+		if (optionsCache['sites'] === undefined)
 		{
-			optionsCache[newUrl] = {};
+			optionsCache['sites'] = {};
+		}
+
+		if (optionsCache['sites'][newUrl] === undefined)
+		{
+			optionsCache['sites'][newUrl] = {};
 		}
 
 		if (newUrl != oldUrl && optionsCache[oldUrl] !== undefined)
 		{
 			// Move other (JS or CSS) content if present
-			var oldJs = optionsCache[oldUrl]['js'];
-			var oldCss = optionsCache[oldUrl]['css'];
-			optionsCache[newUrl][js] = oldJs;
-			optionsCache[newUrl][css] = oldCss;
+			var oldJs = optionsCache['sites'][oldUrl]['js'];
+			var oldCss = optionsCache['sites'][oldUrl]['css'];
+			optionsCache['sites'][newUrl][js] = oldJs;
+			optionsCache['sites'][newUrl][css] = oldCss;
 
-			delete optionsCache[oldUrl];
+			delete optionsCache['sites'][oldUrl];
 			
 			// TODO: Adjust DOM to show new URL in place of the old one
 		}
 
-		optionsCache[newUrl][jsOrCss] = content;
+		optionsCache['sites'][newUrl][jsOrCss] = content;
 		chrome.storage.sync.set({ 'options': optionsCache }, null);
 	}
 }
