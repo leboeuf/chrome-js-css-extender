@@ -12,7 +12,29 @@ var Options = {
 			$this.prop('checked', optionsCache[optionKey]);
 		});
 
+		Options.loadSitesTable();
+
 		this.attachListeners();
+	},
+
+	loadSitesTable: function() {
+		if (optionsCache['sites'] === undefined)
+		{
+			optionsCache['sites'] = {};
+		}
+
+		// Remove all table rows except header row
+		$('#customization-list table tr:not(:first)').empty();
+
+		// Add rows
+		for (var site in optionsCache['sites']) {
+			var $tr = $('<tr><td class="customized-url">' + site + '</td>' +
+						'<td><button data-action="edit-js">Edit JS</button></td>' +
+						'<td><button data-action="edit-css">Edit CSS</button></td>' +
+						'<td><button data-action="delete">delete</button></td></tr>')
+
+			$('#customization-list table').append($tr);
+		}
 	},
 
 	attachListeners: function() {
@@ -29,7 +51,7 @@ var Options = {
 			return;
 
 		optionsCache[optionKey] = $this.is(':checked');
-		chrome.storage.sync.set({ 'options': optionsCache }, null);
+		Options.persistOptionsCacheToStorage();
 	},
 
 	// Persist what is in the edition textarea (happens then the user clicks 'Save')
@@ -44,8 +66,7 @@ var Options = {
 		else
 			optionsCache[optionKey] = value;
 
-		chrome.storage.sync.set({ 'options': optionsCache }, null);
-		Options.closeEdit();
+		Options.persistOptionsCacheToStorage();
 	},
 
 	buttonClick: function(e) {
@@ -57,17 +78,20 @@ var Options = {
 
 		switch (action) {
 			case 'add':
+				Options.edit('js-', 'Edit JS', '', '');
+				break;
 			case 'edit-js':
 				var targetUrl = $this.parent().parent().find('.customized-url').text();
-				Options.edit('js-' + targetUrl, 'Edit JS', '', targetUrl);
+				Options.edit('js-' + targetUrl, 'Edit JS', optionsCache['sites'][targetUrl]['js'], targetUrl);
 				break;
 			case 'edit-css':
 				var targetUrl = $this.parent().parent().find('.customized-url').text();
-				Options.edit('css-' + targetUrl, 'Edit CSS', '', targetUrl);
+				Options.edit('css-' + targetUrl, 'Edit CSS', optionsCache['sites'][targetUrl]['css'], targetUrl);
 				break;
 			case 'delete':
 				var targetUrl = $this.parent().parent().find('.customized-url').text();
-				// todo: delete from options and DOM
+				Options.delete(targetUrl);
+				Options.loadSitesTable();
 				Options.closeEdit();
 				break;
 			case 'import':
@@ -80,6 +104,8 @@ var Options = {
 				break;
 			case 'save':
 				Options.persistEditbox();
+				Options.loadSitesTable();
+				Options.closeEdit();
 				break;
 			case 'cancel':
 				Options.closeEdit();
@@ -103,6 +129,11 @@ var Options = {
 		$editDiv.show();
 	},
 
+	delete: function(url) {
+		delete optionsCache['sites'][url];
+		Options.persistOptionsCacheToStorage();
+	},
+
 	closeEdit: function() {
 		var $editDiv = $('#edit');
 		$editDiv.find('h2').text('');
@@ -116,11 +147,6 @@ var Options = {
 		var dashPos = target.indexOf('-');
 		var oldUrl = target.substring(dashPos + 1);
 		var jsOrCss = target.substring(0, dashPos);
-
-		if (optionsCache['sites'] === undefined)
-		{
-			optionsCache['sites'] = {};
-		}
 
 		if (optionsCache['sites'][newUrl] === undefined)
 		{
@@ -137,11 +163,16 @@ var Options = {
 
 			delete optionsCache['sites'][oldUrl];
 			
-			// TODO: Adjust DOM to show new URL in place of the old one
+			Options.loadSitesTable();
 		}
 
 		optionsCache['sites'][newUrl][jsOrCss] = content;
+		Options.persistOptionsCacheToStorage();
+	},
+
+	persistOptionsCacheToStorage: function() {
 		chrome.storage.sync.set({ 'options': optionsCache }, null);
+		chrome.runtime.sendMessage({ message: 'optionsCacheUpdated' }, null);
 	}
 }
 

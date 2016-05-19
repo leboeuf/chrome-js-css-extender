@@ -1,10 +1,13 @@
 var optionsCache;
 
 (function() {
-	chrome.storage.sync.get(null, function(items){
-		optionsCache = items['options'] || {};
-	});
+	loadOptionsFromStorage();
 })();
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if (message['message'] == 'optionsCacheUpdated')
+		loadOptionsFromStorage(); // Reload options cache
+});
 
 // This is triggered when a document has finished loading
 // see http://stackoverflow.com/questions/27239280 for pushstate (e.g. youtube pages that load via ajax)
@@ -25,6 +28,12 @@ chrome.webNavigation.onCompleted.addListener(function(o) {
 }, {
 	url: []
 });
+
+function loadOptionsFromStorage() {
+	chrome.storage.sync.get(null, function(items){
+		optionsCache = items['options'] || {};
+	});
+}
 
 function getCustomJs(url) {
 	// TODO: maybe add the following placeholder when creating a custom JS: (function() { ... })();
