@@ -16,22 +16,3 @@ var InjectUtils = {
 		document.documentElement.appendChild(script);
 	}
 };
-
-
-// https://github.com/ankit/stylebot/blob/master/stylebot/browseraction/browseraction.js
-// chrome.tabs.sendRequest(this.tab.id, { //sendRequest deprecated, use chrome.runtime.sendMessage(string extensionId, any message, object options, function responseCallback) or chrome.tabs.sendMessage(integer tabId, any message, object options, function responseCallback)
-//       name: 'install',
-//       id: id,
-//       title: $el.data('title'),
-//       timestamp: $el.data('timestamp'),
-//       url: $el.data('url'),
-//       css: this.css[id]
-//     }, function() {});
-
-// chrome.tabs.sendRequest(this.tab.id, {
-//       name: 'toggle'
-//     }, function() {}); window.close();
-
-// $(document).ready(function() {
-//   BrowserAction.init();
-// });
