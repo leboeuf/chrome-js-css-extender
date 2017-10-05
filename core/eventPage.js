@@ -41,6 +41,20 @@ function getCustomJs(url) {
 	var customJs = optionsCache['sites'][url] !== undefined && optionsCache['sites'][url] !== undefined
 		? optionsCache['sites'][url]['js'] || ''
 		: '';
+		
+	if (customJs == '')
+	{
+		// Look for wildcards at the end of the string (TODO: make true wildcards that can be anywhere in the string)
+		for (var siteUrl in optionsCache['sites']){
+			if (siteUrl.indexOf('*') !== -1){
+				let siteUrlWithoutWildcard = siteUrl.replace('*', '');
+				if (url.includes(siteUrlWithoutWildcard)){
+					customJs = optionsCache['sites'][siteUrl]['js'] || '';
+					break;
+				}
+			}
+		}
+	}
 
 	if (isGlobalJsEnabled)
 	{
